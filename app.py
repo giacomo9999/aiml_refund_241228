@@ -5,7 +5,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import accuracy_score
 
-data = pd.read_csv("csmith_data.csv")
+data = pd.read_csv("csmith_data_2.csv")
 scaler = StandardScaler()
 model = LogisticRegression()
 
@@ -14,18 +14,11 @@ X = data.drop("Outcome", axis=1)  # Features (independent variables)
 y = data["Outcome"]  # Target (dependent variable)
 X_scaled = scaler.fit_transform(X)  # normalize the imported data to 1(?)
 
-# Split the data into training and test sets (80% train, 20% test)
+# Split the data into training and test sets
+# (Adjust test size for data supplied...csmith_data_2.csv has six 'training' cases and four 'test' cases, so 'test_size' for that dataset should be 0.4)
 X_train, X_test, y_train, y_test = train_test_split(
-    X_scaled, y, test_size=0.2, random_state=None, shuffle=False
+    X_scaled, y, test_size=0.4, random_state=None, shuffle=False
 )
-
-print(X_train)
-print("-----")
-print(X_test)
-print("-----")
-print(y_train)
-print("-----")
-print(y_test)
 
 # Train the model
 model.fit(X_train, y_train)
@@ -37,12 +30,12 @@ y_pred = model.predict(X_test)
 accuracy = accuracy_score(y_test, y_pred)
 print(f"Model Accuracy: {accuracy * 100:.2f}%")
 
-new_customer = [[1000, 0.2, 10, 9]]  # data for flagrant fraud
-new_customer2 = [[50, 7, 2, 1]]  # data for honest law-abiding citizen
+dishonest_customer = [[1000, 0.2, 10, 9]]  # data for flagrant fraud
+honest_customer = [[50, 7, 1, 1]]  # data for honest law-abiding citizen
 
-# Predict the outcome (0 = no diabetes, 1 = diabetes)
-prediction = model.predict(new_customer)
-prediction2 = model.predict(new_customer2)
+# Predict the outcome (0 = no refund, 1 = refund)
+prediction_honest = model.predict(dishonest_customer)
+prediction_dishonest = model.predict(honest_customer)
 
-print(f"Refund Prediction: {prediction[0]}")
-print(f"Refund Prediction: {prediction2[0]}")
+print(f"Refund Prediction (Honest Customer): {prediction_honest[0]}")
+print(f"Refund Prediction (Dishonest Customer): {prediction_dishonest[0]}")
