@@ -1,4 +1,4 @@
-const fs = require("fs");
+const fs = require('fs')
 
 const weightedRandom = (min, max) => {
     return Math.round(max / (Math.random() * max + min))
@@ -34,23 +34,48 @@ const calculateAccountsOnIp = () => {
 }
 
 const generateOrderData = () => {
+    let redFlags = 0
+    let outcome = 1 //refund approved unless more than two 'red flags' (signs of fraud)
+
+    let amount = calculateOrderPrice()
+    if (amount > 120) {
+        redFlags += 1
+    }
+    let years = calculateYears()
+    if (years < 0.2) {
+        redFlags += 1
+    }
+    let priorRequests = calculatePriorRequests()
+    if (priorRequests > 4) {
+        redFlags += 1
+    }
+    let accountsOnIP = calculateAccountsOnIp()
+    if (accountsOnIP > 5) {
+        redFlags += 1
+    }
+
+    if (redFlags >= 2) {
+        outcome = 0
+    }
+
     let stringOut =
-        calculateOrderPrice() +
+        amount +
         ',' +
-        calculateYears() +
+        years +
         ',' +
-        calculatePriorRequests() +
+        priorRequests +
         ',' +
-        calculateAccountsOnIp()
+        accountsOnIP +
+        ',' +
+        outcome
     return stringOut
 }
 
-let orderDataOut = ''
+let columnNames = 'Amount,Years,PriorRequests,AcctsOnIP,Outcome \n'
+let orderDataOut = columnNames
 
 for (let i = 0; i <= 500; i++) {
     orderDataOut += generateOrderData() + '\n'
 }
-
-console.log(orderDataOut)
 
 fs.writeFileSync('./order-data.csv', orderDataOut)

@@ -2,12 +2,16 @@ import pandas as pd
 
 from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import train_test_split
-from sklearn.linear_model import LogisticRegression
+
+# from sklearn.linear_model import LogisticRegression
+from sklearn.tree import DecisionTreeClassifier
 from sklearn.metrics import accuracy_score
 
-data = pd.read_csv("csmith_data_2.csv")
+data = pd.read_csv("order-data.csv")
 scaler = StandardScaler()
-model = LogisticRegression()
+# model = LogisticRegression()
+# Logistic Regression doesn't seem to work, for reasons that are utterly beyond me
+model = DecisionTreeClassifier()
 
 # Separate the features (X) and the target variable (y)
 X = data.drop("Outcome", axis=1)  # Features (independent variables)
@@ -30,12 +34,12 @@ y_pred = model.predict(X_test)
 accuracy = accuracy_score(y_test, y_pred)
 print(f"Model Accuracy: {accuracy * 100:.2f}%")
 
-dishonest_customer = [[1000, 0.2, 10, 9]]  # data for flagrant fraud
-honest_customer = [[50, 7, 1, 1]]  # data for honest law-abiding citizen
+honest_customer = [[25, 3, 0, 1]]  # data for honest law-abiding citizen
+dishonest_customer = [[1154, 0.1, 10, 15]]  # data for flagrant fraud
 
-# Predict the outcome (0 = no refund, 1 = refund)
-prediction_honest = model.predict(dishonest_customer)
-prediction_dishonest = model.predict(honest_customer)
+# Predict the outcome (0 = refund denied, 1 = refund granted)
+prediction_honest = model.predict(honest_customer)
+prediction_dishonest = model.predict(dishonest_customer)
 
 print(f"Refund Prediction (Honest Customer): {prediction_honest[0]}")
 print(f"Refund Prediction (Dishonest Customer): {prediction_dishonest[0]}")
