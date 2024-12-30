@@ -92,17 +92,19 @@ validation_data = [
 
 
 def predict_refund(request):
-    """
-    Predict whether a refund should be issued based on heuristics derived from the data
-    """
-    # write your model here: return True if the model predicts a refund should be issued and False otherwise
-    return True
+    # Predict whether a refund should be issued based on heuristics derived from the data
+
+    return not (
+        request["amount"] > 400
+        or request["years"] < 0.9
+        or request["prior_requests"] > 10
+        or request["accounts_on_IP"] > 9
+    )
 
 
 def get_model_accuracy(data):
-    """
-    Calculate the accuracy of the model on a given dataset
-    """
+    # Calculate the accuracy of the model on a given dataset
+
     # invoke your model for each request in data and compare its prediction to the actual refund status
     num_correct_predictions = sum(
         predict_refund(entry) == entry["refund"] for entry in data
@@ -113,8 +115,9 @@ def get_model_accuracy(data):
 
 
 # # Train your model against (ONLY) the training data, tweaking as necessary to maximize its accuracy
-print("Training Data Accuracy:", get_model_accuracy(training_data))
 
 # # Once you're happy with your model's accuracy, check it against the validation data!
 # # How does your model fare against the validation data?
+
+print("Training Data Accuracy:", get_model_accuracy(training_data))
 print("Validation Data Accuracy:", get_model_accuracy(validation_data))

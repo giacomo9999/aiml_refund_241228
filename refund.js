@@ -92,7 +92,6 @@ const validation_data = [
 
 const predict_refund = (request) => {
     // Predict whether a refund should be issued based on heuristics derived from the data
-
     return !(
         request.amount > 400 ||
         request.years < 0.9 ||
@@ -114,11 +113,8 @@ const get_model_accuracy = (data) => {
 }
 
 // Train your model against (ONLY) the training data, tweaking as necessary to maximize its accuracy
-// console.log('Training Data Accuracy:', get_model_accuracy(training_data))
-
 // Once you're happy with your model's accuracy, check it against the validation data!
 // How does your model fare against the validation data?
-// console.log('Validation Data Accuracy:', get_model_accuracy(validation_data))
 
 console.log(get_model_accuracy(training_data))
 console.log(get_model_accuracy(validation_data))
